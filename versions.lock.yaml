@@ -1,0 +1,26 @@
+# Verified host tools are recorded by `make versions`. Image digests remain
+# intentionally unfilled until a successful pull/build captures them.
+kind:
+  version: v0.33.0
+  verified_on_host: true
+kubernetes:
+  node_image: kindest/node:v1.37.0
+  digest: null
+  local_image_id: sha256:24f646398ba8fe575fbdcf6f48831e3a88d0853da8ecc9d2774168070e5a3bea
+  verification: image-present-and-identified-locally-2026-11-17
+kubectl:
+  version: v1.37.0
+  supported_range: "v1.37.x client for this lab"
+runtime:
+  go: "1.26.0"
+  builder_image: golang:1.26.0-alpine3.22
+  builder_image_digest: sha256:169d3991a4f795124a88b33c73549955a3d856e26e8504b5530c30bd245f9f1b
+  runtime_image: gcr.io/distroless/static-debian12:nonroot
+  runtime_image_digest: sha256:afa5c872c891853ca7fcf1f12c3edb23f7eeef36189728842dd51042ff57f7ab
+  verification: observed-during-local-image-build-2026-11-17
+mermaid:
+  image: ghcr.io/mermaid-js/mermaid-cli:11.12.0
+  digest: null
+  verification: unverified-no-docker-daemon
+future:
+  istio: "1.32.x deferred; not installed or validated"

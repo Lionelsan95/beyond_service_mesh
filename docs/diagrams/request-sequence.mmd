@@ -1,0 +1,24 @@
+sequenceDiagram
+  autonumber
+  participant C as Experiment client
+  participant O as order-service
+  participant I as inventory-service
+  participant P as payment-service mock
+  participant N as notification-service mock
+  Note over C,N: Baseline: direct Service DNS, synchronous HTTP, no mesh, no retry
+  C->>O: POST /orders + X-Correlation-ID
+  O->>I: POST /work (propagated correlation ID)
+  I-->>O: 200 accepted
+  O->>P: POST /work (2 s client timeout)
+  alt payment_delay_ms=300
+    P->>P: sleep 300 ms for this request only
+    P-->>O: 200 accepted
+  else fail=payment
+    P-->>O: 503
+    O-->>C: 502 rejected with dependency evidence
+  else success
+    P-->>O: 200 authorized mock
+    O->>N: POST /work
+    N-->>O: 200 accepted
+    O-->>C: 201 accepted with dependency durations
+  end

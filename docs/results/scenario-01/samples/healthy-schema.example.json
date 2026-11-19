@@ -1,0 +1,10 @@
+{
+  "example_only": true,
+  "experiment": "healthy",
+  "sample_count": 20,
+  "http_status_distribution": {"201": 20},
+  "error_rate": 0,
+  "client_observed_latency_ms": {"p50": 4, "p95": 7, "p99": 7},
+  "payment_service_observed_latency_ms": {"p50": 1, "p95": 2, "p99": 2},
+  "note": "Illustrative schema only. These numbers are not measured evidence."
+}

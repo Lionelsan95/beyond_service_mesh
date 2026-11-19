@@ -1,0 +1,17 @@
+flowchart TB
+  Client["Experiment client\nlocal kubectl port-forward"] --> OrderSvc["order-service Service\nClusterIP + DNS"]
+  subgraph Cluster["kind-btm-lab / btm-lab namespace — no mesh"]
+    OrderSvc --> OrderPod["order-service Pod\n2 s downstream timeout\nno retry"]
+    OrderPod --> InvSvc["inventory-service DNS / Service"]
+    OrderPod --> PaySvc["payment-service DNS / Service"]
+    OrderPod --> NoteSvc["notification-service DNS / Service"]
+    InvSvc --> InvPod["inventory Pod IP"]
+    PaySvc --> PayPod["payment Pod IP\nrequest-only delay/failure hook"]
+    NoteSvc --> NotePod["notification Pod IP"]
+  end
+  CNI["kind CNI: Pod IP connectivity"] -. provides .-> OrderPod
+  Proxy["kube-proxy or configured equivalent:\nService virtual IP to endpoint selection"] -. implements .-> PaySvc
+  classDef svc fill:#d8eff0,stroke:#167d85,color:#123d40;
+  classDef risk fill:#fff0cf,stroke:#b7791f,color:#5c3b00;
+  class OrderSvc,InvSvc,PaySvc,NoteSvc svc;
+  class PayPod risk;

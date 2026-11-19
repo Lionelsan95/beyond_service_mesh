@@ -4,9 +4,14 @@
 
 - The lab uses four fictitious HTTP services in namespace `btm-lab`: order, inventory, payment, and notification.
 - Order-service resolves downstream services through Kubernetes Service FQDNs such as `payment-service.btm-lab.svc.cluster.local`.
-- The successful smoke run proved that the baseline request path can complete through those direct Services on the validated local host.
-- Order-service uses a 2-second HTTP-client timeout and has no application retry loop.
-- A request-scoped mock payment failure produced a visible non-success outcome rather than a successful order response.
+- Campaign `2026-11-19-baseline` ([manifest](evidence/2026-11-19-baseline/manifest.json), captured from clean commit `8b4a4fd104569c8eb3a67c60c5b914549f9dbe9a`) validated all seven reports with matching SHA-256 checksums:
+  - Healthy: 20× HTTP 201, client p50 `15.804 ms`.
+  - 300 ms payment delay: 20× HTTP 201, client p50 `308.562 ms`.
+  - 1,500 ms payment delay: 20× HTTP 201, client p50 `1508.864 ms`.
+  - 2,500 ms payment delay: 20× HTTP 502, client p50 `2005.149 ms` (against Order's 2-second HTTP client timeout with no retry loop).
+  - Failure injection (`?fail=payment`): 20× HTTP 502 (`error_rate: 0.0` vs `expected_http_status: 502`).
+  - Recovery (uninjected requests): 20× HTTP 201, client p50 `7.112 ms`.
+  - Networking snapshot (`payment-service`): ClusterIP `10.96.55.245`, EndpointSlice IP `10.244.0.15`, Pod IP `10.244.0.15`.
 - The workloads run without a service mesh, sidecar proxy, Gateway API, monitoring stack, real payments, credentials, or hosted AI service.
 
 ## Networking model and evidence to reproduce
@@ -36,26 +41,23 @@ They must not be treated as interchangeable. The application calls the Service D
 
 Kubernetes already provides valuable local service discovery and routing primitives. The baseline makes the remaining application responsibilities visible: timeout selection, failure propagation, request semantics, logging, and correlation. Whether a mesh is warranted is not answered by this baseline alone.
 
-## Uncertainties and required evidence before publication
+## Uncertainties and limitations
 
-- Run and retain reports for healthy, latency, failure, recovery, and network evidence on the publication candidate revision.
-- Capture the exact node image manifest digest separately; the recorded Docker image ID is not a registry manifest digest.
-- Mermaid exports remain unavailable until an accessible pinned renderer is verified.
-- Do not publish local latency percentiles as production performance data.
-- The 2026-11-17 fresh-cluster validation captured kindnet and kube-proxy in iptables mode, but did not deploy the application after an interrupted Docker build. See [validation-report.md](validation-report.md); do not present its unexecuted experiment outcomes as evidence.
-- On 2026-11-18, the current source passed the pinned Go unit suite after a delay-propagation compile fix. Its Docker image was not deployed because the automation environment interrupted the image build; no new workload experiment result is available.
+- Capture the exact `kindest/node:v1.37.0` registry manifest digest separately; the recorded Docker image ID in `versions.lock.yaml` is a local image ID, not a registry manifest digest.
+- Mermaid CLI container rendering (`make diagrams`) remains unverified because GHCR denied pull of `ghcr.io/mermaid-js/mermaid-cli:11.12.0`. Article 01 uses the editorial SVG/PNG figure set under `docs/articles/assets/01/`.
+- Do not publish local latency percentiles as production performance data; 20 sequential requests over `kubectl port-forward` on a single-node kind cluster illustrate timeout behavior, not throughput or tail latency.
+- Measurements establish caller-side behavior; server-side processing after Order's client timeout cancellation was not measured.
+- See [validation-report.md](validation-report.md) for the complete 2026-11-19 validation table and historical 2026-11-17/18 records.
 
 ## Commands and diagrams
 
 ```sh
+make doctor
 make lab-up
-make scenario-01-healthy
-PAYMENT_DELAY_MS=300 make scenario-01-latency
-make scenario-01-failure
-make scenario-01-recovery
-make scenario-01-network
+SCENARIO_01_CAMPAIGN_ID=local-baseline make scenario-01-all
+make validate-evidence
 make versions
 make lab-down
 ```
 
-Canonical diagrams: [component view](../../diagrams/baseline-overview.mmd) and [request sequence](../../diagrams/request-sequence.mmd).
+Editorial figures: [docs/articles/assets/01/](../../articles/assets/01/) (SVG sources + matching PNG exports). Canonical Mermaid sources: [component view](../../diagrams/baseline-overview.mmd) and [request sequence](../../diagrams/request-sequence.mmd).

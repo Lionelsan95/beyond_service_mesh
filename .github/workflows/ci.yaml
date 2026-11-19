@@ -14,3 +14,5 @@ jobs:
         working-directory: apps
       - uses: azure/setup-kubectl@v4
       - run: kubectl kustomize platform/base >/dev/null
+      - run: bash -n scripts/*.sh
+      - run: scripts/validate-scenario-01-evidence.sh

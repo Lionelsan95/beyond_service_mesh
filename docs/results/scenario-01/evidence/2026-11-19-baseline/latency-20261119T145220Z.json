@@ -1,0 +1,33 @@
+{
+  "captured_at_utc": "2026-11-19T14:52:20Z",
+  "experiment": "latency",
+  "sample_count": 20,
+  "expected_http_status": 201,
+  "http_status_distribution": {
+    "502": 20
+  },
+  "error_count": 20,
+  "error_rate": 1.0,
+  "client_observed_latency_ms": {
+    "p50": 2005.149,
+    "p95": 2079.577,
+    "p99": 2106.14
+  },
+  "payment_service_observed_latency_ms": {
+    "p50": 2000.0,
+    "p95": 2001.0,
+    "p99": 2001.0
+  },
+  "request_controls": {
+    "payment_delay_ms": 2500,
+    "failure_injection": false
+  },
+  "metadata": {
+    "campaign_id": "2026-11-19-baseline",
+    "git_commit": "8b4a4fd104569c8eb3a67c60c5b914549f9dbe9a",
+    "cluster_context": "kind-btm-lab",
+    "namespace": "btm-lab",
+    "node_image_reference": "kindest/node:v1.37.0"
+  },
+  "note": "Client latency is curl time_total through kubectl port-forward. Payment latency is measured by order-service around its downstream HTTP call; neither is a production benchmark."
+}

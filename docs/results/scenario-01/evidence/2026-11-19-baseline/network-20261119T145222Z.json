@@ -1,0 +1,18 @@
+{
+  "captured_at_utc": "2026-11-19T14:52:22Z",
+  "service": "payment-service",
+  "cluster_ip": "10.96.55.245",
+  "endpoint_ips": [
+    "10.244.0.15"
+  ],
+  "pod_ips": [
+    "10.244.0.15"
+  ],
+  "metadata": {
+    "campaign_id": "2026-11-19-baseline",
+    "git_commit": "8b4a4fd104569c8eb3a67c60c5b914549f9dbe9a",
+    "cluster_context": "kind-btm-lab",
+    "namespace": "btm-lab",
+    "node_image_reference": "kindest/node:v1.37.0"
+  }
+}

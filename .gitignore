@@ -12,3 +12,4 @@ docs/diagrams/rendered/
 docs/results/versions.json
 docs/results/scenario-01/generated/*.json
 03-CODEX-BOOTSTRAP-PROMPT.md
+btm-*.tar.gz

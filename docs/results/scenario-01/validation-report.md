@@ -1,6 +1,28 @@
 # Scenario 01 validation report
 
-Captured on 2026-11-17. This report distinguishes commands that completed from commands that were attempted but could not produce workload evidence.
+This report tracks validation runs chronologically, distinguishing completed campaigns from earlier interrupted automation attempts.
+
+## 2026-11-19 authoritative campaign (`2026-11-19-baseline`)
+
+A complete seven-report campaign was executed on the local Linux host against clean Git commit `8b4a4fd104569c8eb3a67c60c5b914549f9dbe9a` (`working_tree_dirty: false`) in cluster context `kind-btm-lab`, namespace `btm-lab`, node image reference `kindest/node:v1.37.0`. All seven JSON reports and SHA-256 checksums are preserved in [evidence/2026-11-19-baseline/manifest.json](evidence/2026-11-19-baseline/manifest.json).
+
+| Experiment | Report file | Observed statuses | Client p50 (ms) | Payment p50 (ms) | `error_rate` (vs expected) | Status |
+|---|---|---|---:|---:|---:|---|
+| Healthy | `healthy-20261119T145101Z.json` | `201: 20` | 15.804 | 2.0 | 0.0 | PASS |
+| Latency 300 ms | `latency-20261119T145108Z.json` | `201: 20` | 308.562 | 302.0 | 0.0 | PASS |
+| Latency 1,500 ms | `latency-20261119T145139Z.json` | `201: 20` | 1508.864 | 1502.0 | 0.0 | PASS |
+| Latency 2,500 ms | `latency-20261119T145220Z.json` | `502: 20` | 2005.149 | 2000.0 | 1.0 | PASS (timeout boundary triggered) |
+| Failure (`?fail=payment`) | `failure-20261119T145221Z.json` | `502: 20` | 5.632 | 1.0 | 0.0 (expected 502) | PASS |
+| Recovery | `recovery-20261119T145222Z.json` | `201: 20` | 7.112 | 1.0 | 0.0 | PASS |
+| Network (`payment-service`) | `network-20261119T145222Z.json` | ClusterIP `10.96.55.245`, Endpoint/Pod `10.244.0.15` | n/a | n/a | n/a | PASS |
+
+Notes:
+- `error_rate` in `failure-20261119T145221Z.json` is `0.0` because `expected_http_status` is `502` and all 20 responses returned HTTP `502`; it measures deviations from the test expectation, not the HTTP 5xx rate.
+- The evidence snapshot records `source_provenance.git_commit = 8b4a4fd104569c8eb3a67c60c5b914549f9dbe9a`. The subsequent commit that preserves this snapshot and integrates Article 01 adds documentation/evidence files without modifying `apps/` or `platform/`.
+
+## 2026-11-17 to 2026-11-18 historical validation record
+
+Captured on 2026-11-17 and retried on 2026-11-18. Preserved below as historical context for earlier automation limitations.
 
 ## 2026-11-18 continuation
 
@@ -56,4 +78,4 @@ No new timeout result was measured at 2500 ms. The source code configures a two-
 
 ## Publication readiness
 
-Article 01 may use the already verified baseline facts and the explicitly observed local cluster networking configuration. It must not cite latency percentiles, status distributions, recovery behavior, Service endpoint addresses, or timeout outcomes until the listed experiment commands complete and their generated JSON reports are retained.
+The `2026-11-19-baseline` evidence snapshot is complete, JSON-valid, and SHA-256 verified against `manifest.json`. Article 01 may cite these exact local observations alongside explicit methodology caveats (single-node kind, 20 sequential requests, `kubectl port-forward` client path, caller-side timeout observation only). See [ARTICLE-01-RELEASE-READINESS.md](../../articles/ARTICLE-01-RELEASE-READINESS.md) for full release checks and remaining manual publication steps.

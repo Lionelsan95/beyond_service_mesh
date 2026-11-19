@@ -17,7 +17,7 @@ lab-down: ## Delete only the project kind cluster; safe to repeat.
 diagrams: ## Render Mermaid source through the pinned container renderer.
 	@scripts/diagrams.sh
 test: ## Run Go unit tests in the pinned builder container.
-	@docker run --rm -v "$(CURDIR):/src:ro" -w /src golang:1.26.0-alpine3.22 go test ./...
+	@docker run --rm -v "$(CURDIR):/src:ro" -w /src/apps golang:1.26.0-alpine3.22 go test ./...
 validate: ## Render the Kustomize manifests for syntax/structure checks.
 	@kubectl kustomize platform/base >/dev/null && echo "PASS Kustomize rendered platform/base"
 validate-evidence: ## Run locale-safe JSON/report regression tests and validate normalized evidence.

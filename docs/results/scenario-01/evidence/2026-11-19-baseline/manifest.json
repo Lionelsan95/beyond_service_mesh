@@ -1,0 +1,42 @@
+{
+  "kind": "scenario-01-evidence-snapshot",
+  "created_at_utc": "2026-11-19T14:52:22Z",
+  "campaign_id": "2026-11-19-baseline",
+  "source_provenance": {
+    "git_commit": "8b4a4fd104569c8eb3a67c60c5b914549f9dbe9a",
+    "cluster_context": "kind-btm-lab",
+    "namespace": "btm-lab",
+    "node_image_reference": "kindest/node:v1.37.0"
+  },
+  "working_tree_dirty": false,
+  "files": [
+    {
+      "name": "failure-20261119T145221Z.json",
+      "sha256": "aec5f6d4103a37cd88746b17c39dcfe4f9a10ea0bca5a8bf1ab32f60ac8fb9e7"
+    },
+    {
+      "name": "healthy-20261119T145101Z.json",
+      "sha256": "6f57e98438c00ffe9eecefee698c0b35d50c917cfc26245932a4224b344d242d"
+    },
+    {
+      "name": "latency-20261119T145108Z.json",
+      "sha256": "d871169cff0bc0518783330706c17503452feefeb7a642f633b5eee007cfbe9e"
+    },
+    {
+      "name": "latency-20261119T145139Z.json",
+      "sha256": "84b7f4a7357d4dfa657e8ed4725c72a180065dbe70cc603322ca8e8b41dcccff"
+    },
+    {
+      "name": "latency-20261119T145220Z.json",
+      "sha256": "42743e7f9fb9338c53993f63de3a500ede498bb6a4c13cd9780b34136262287d"
+    },
+    {
+      "name": "network-20261119T145222Z.json",
+      "sha256": "cc0a9c507730101f8888f379a683d24858129c414e2fbdd85dee501b34343ff8"
+    },
+    {
+      "name": "recovery-20261119T145222Z.json",
+      "sha256": "0976ffecb9457f9ca05d9935f11234ef07078d24cbb1ab9a9e7a5500f73442b6"
+    }
+  ]
+}

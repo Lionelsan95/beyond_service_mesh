@@ -42,10 +42,20 @@ The workloads run without mounted credentials, a Kubernetes API token, or privil
 
 | Lab | Status | Article |
 |---|---|---|
-| 01-baseline | Implemented foundation; host validation recorded separately | 01 |
+| 01-baseline | Implemented and validated (`2026-11-19-baseline` evidence snapshot recorded) | [01](docs/articles/01-kubernetes-found-the-service.md) |
 | 02-traffic-and-proxies through 07-ai-workloads | Not implemented | 02–07 |
 | Synthesis | Not a lab; not implemented | 08 |
 
 Read [the implementation plan](docs/architecture/implementation-plan.md), [ADRs](docs/adr), and [validation record](docs/results/bootstrap-validation.md) before treating any behavior as verified.
 
-For the Article 01 technical evidence workflow, use [the Scenario 01 evidence package](docs/results/scenario-01/README.md). It provides healthy, latency, failure, recovery, and networking capture targets without installing or enabling a mesh.
+For the Article 01 technical evidence workflow, use [the Scenario 01 evidence package](docs/results/scenario-01/README.md). To replay the full Scenario 01 campaign locally:
+
+```sh
+make doctor
+make lab-up
+SCENARIO_01_CAMPAIGN_ID=local-baseline make scenario-01-all
+make validate-evidence
+make lab-down
+```
+
+`make scenario-01-all` requires `SCENARIO_01_CAMPAIGN_ID` so generated reports carry explicit provenance metadata; to create an immutable snapshot directory under `docs/results/scenario-01/evidence/`, run `CAMPAIGN_ID=<id> make scenario-01-snapshot` after inspecting `docs/results/scenario-01/generated/*.json`. The authoritative Article 01 snapshot is preserved under [docs/results/scenario-01/evidence/2026-11-19-baseline/](docs/results/scenario-01/evidence/2026-11-19-baseline/manifest.json).
